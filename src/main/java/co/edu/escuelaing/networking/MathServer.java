@@ -5,6 +5,12 @@ import java.net.*;
 
 public class MathServer {
 
+    /**
+     * Ejercicio 4.3.1
+     * Servidor que dado un numero realiza operaciones sin, cos, tan.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
         try {

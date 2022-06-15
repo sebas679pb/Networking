@@ -5,7 +5,12 @@ import java.io.*;
 
 public class HttpServer {
 
-    //4.4. Servidor web
+    /**
+     * 4.4
+     * Servidor web que atiende una solicitud.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
         try {

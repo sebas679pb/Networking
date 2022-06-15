@@ -58,6 +58,8 @@ public class HttpServerMulti {
                     type = "text/html";
                 } else if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg")) {
                     type = "image/jpeg";
+                } else if(filePath.endsWith(".js")){
+                    type = "application/json; charset=utf-8";
                 }
                 InputStream inStream = new FileInputStream(filePath);
                 out.print("HTTP/1.1 200 OK\r\n" +

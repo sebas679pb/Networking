@@ -5,40 +5,35 @@ import java.io.*;
 
 public class HttpServerMulti {
 
+    private static HttpServerMulti _instance = new HttpServerMulti();
+
+    public static HttpServerMulti getInstance() {
+        return _instance;
+    }
+
     /**
      * Ejercicio 4.5.1
      * Servidor web que soporta multiples solicitudes seguidas (no concurrentes).
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(35000);
-        } catch (IOException e) {
-            System.err.println("Could not listen on port: 35000.");
-            System.exit(1);
-        }
+    public void main() throws IOException {
+        ServerSocket serverSocket = serverSocketInit();
         boolean running = true;
         while (running) {
-            Socket clientSocket = null;
-            try {
-                System.out.println("Listo para recibir ...");
-                clientSocket = serverSocket.accept();
-            } catch (IOException e) {
-                System.err.println("Accept failed.");
-                System.exit(1);
-            }
+            Socket clientSocket = clientSocketInit(serverSocket);
 
             PrintStream out = new PrintStream(new BufferedOutputStream(clientSocket.getOutputStream()));
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String inputLine, outputLine;
+            String inputLine;
             String filePath = null;
             boolean firstLine = true;
             while ((inputLine = in.readLine()) != null) {
                 if (firstLine) {
                     String path = inputLine.split(" ")[1];
-                    filePath = "src\\main\\java\\co\\edu\\escuelaing\\networking\\webapp\\" + path.replace("/", "");
+                    path = path.replace("/", "");
+                    filePath = "resources\\" + path;
+                    System.out.println(path);
                     System.out.println(filePath);
                     firstLine = false;
                 }
@@ -52,7 +47,7 @@ public class HttpServerMulti {
             try {
                 String type = null;
                 if (filePath.endsWith("\\")) {
-                    filePath = "src\\main\\java\\co\\edu\\escuelaing\\networking\\webapp\\index.html";
+                    filePath = "resources\\index.html";
                 }
 
                 if (filePath.endsWith(".html")) {
@@ -71,7 +66,7 @@ public class HttpServerMulti {
             } catch (Exception e) {
                 out.println("HTTP/1.1 404 Not Found\r\n" +
                         "Content-type: text/html\r\n\r\n");
-                filePath = "src\\main\\java\\co\\edu\\escuelaing\\networking\\webapp\\notFound.html";
+                filePath = "resources\\notFound.html";
                 InputStream inStream = new FileInputStream(filePath);
                 while ((len = inStream.read(fileData)) > 0) {
                     out.write(fileData, 0, len);
@@ -85,4 +80,35 @@ public class HttpServerMulti {
         }
         serverSocket.close();
     }
+
+    private ServerSocket serverSocketInit() {
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(getPort());
+        } catch (IOException e) {
+            System.err.println("Could not listen on port: " + getPort());
+            System.exit(1);
+        }
+        return serverSocket;
+    }
+
+    private Socket clientSocketInit(ServerSocket serverSocket) {
+        Socket clientSocket = null;
+        try {
+            System.out.println("Listo para recibir ...");
+            clientSocket = serverSocket.accept();
+        } catch (IOException e) {
+            System.err.println("Accept failed.");
+            System.exit(1);
+        }
+        return clientSocket;
+    }
+
+    private int getPort() {
+        if (System.getenv("PORT") != null) {
+            return Integer.parseInt((System.getenv("PORT")));
+        }
+        return 35000;
+    }
+    
 }

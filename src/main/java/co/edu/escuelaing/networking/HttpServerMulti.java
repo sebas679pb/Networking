@@ -27,10 +27,11 @@ public class HttpServerMulti {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String inputLine;
             String filePath = null;
+            String path = null;
             boolean firstLine = true;
             while ((inputLine = in.readLine()) != null) {
                 if (firstLine) {
-                    String path = inputLine.split(" ")[1];
+                    path = inputLine.split(" ")[1];
                     path = path.replace("/", "");
                     filePath = "resources\\" + path;
                     System.out.println(path);
@@ -48,6 +49,7 @@ public class HttpServerMulti {
                 String type = null;
                 if (filePath.endsWith("\\")) {
                     filePath = "resources\\index.html";
+                    path = "index.html";
                 }
 
                 if (filePath.endsWith(".html")) {
@@ -57,7 +59,7 @@ public class HttpServerMulti {
                 } else if(filePath.endsWith(".js")){
                     type = "application/json; charset=utf-8";
                 }
-                InputStream inStream = new FileInputStream(filePath);
+                InputStream inStream = new FileInputStream(path);
                 out.print("HTTP/1.1 200 OK\r\n" +
                         "Content-type: " + type + "\r\n\r\n");
                 while ((len = inStream.read(fileData)) > 0) {
@@ -67,7 +69,8 @@ public class HttpServerMulti {
                 out.println("HTTP/1.1 404 Not Found\r\n" +
                         "Content-type: text/html\r\n\r\n");
                 filePath = "resources\\notFound.html";
-                InputStream inStream = new FileInputStream(filePath);
+                path = "notFound.html";
+                InputStream inStream = new FileInputStream(path);
                 while ((len = inStream.read(fileData)) > 0) {
                     out.write(fileData, 0, len);
                 }

@@ -1,1 +1,1 @@
-web: java -cp target/classes co.edu.escuelaing.networking.HttpServerMain
+web: java -cp "target/classes" co.edu.escuelaing.networking.HttpServerMain

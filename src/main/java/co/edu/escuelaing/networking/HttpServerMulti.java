@@ -1,6 +1,8 @@
 package co.edu.escuelaing.networking;
 
 import java.net.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.io.*;
 
 public class HttpServerMulti {
@@ -18,68 +20,13 @@ public class HttpServerMulti {
      * @throws IOException
      */
     public void main() throws IOException {
+        ExecutorService threadPool = Executors.newFixedThreadPool(10);
         ServerSocket serverSocket = serverSocketInit();
         boolean running = true;
         while (running) {
             Socket clientSocket = clientSocketInit(serverSocket);
-
-            PrintStream out = new PrintStream(new BufferedOutputStream(clientSocket.getOutputStream()));
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String inputLine;
-            String filePath = null;
-            String path = null;
-            boolean firstLine = true;
-            while ((inputLine = in.readLine()) != null) {
-                if (firstLine) {
-                    path = inputLine.split(" ")[1];
-                    path = path.replace("/", "");
-                    filePath = "resources\\" + path;
-                    System.out.println(path);
-                    System.out.println(filePath);
-                    firstLine = false;
-                }
-                System.out.println("Received: " + inputLine);
-                if (!in.ready()) {
-                    break;
-                }
-            }
-            byte[] fileData = new byte[2000];
-            int len;
-            try {
-                String type = null;
-                if (filePath.endsWith("\\")) {
-                    filePath = "resources\\index.html";
-                    path = "index.html";
-                }
-
-                if (filePath.endsWith(".html")) {
-                    type = "text/html";
-                } else if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg")) {
-                    type = "image/jpeg";
-                } else if(filePath.endsWith(".js")){
-                    type = "application/json; charset=utf-8";
-                }
-                InputStream inStream = new FileInputStream(path);
-                out.print("HTTP/1.1 200 OK\r\n" +
-                        "Content-type: " + type + "\r\n\r\n");
-                while ((len = inStream.read(fileData)) > 0) {
-                    out.write(fileData, 0, len);
-                }
-            } catch (Exception e) {
-                out.println("HTTP/1.1 404 Not Found\r\n" +
-                        "Content-type: text/html\r\n\r\n");
-                filePath = "resources\\notFound.html";
-                path = "notFound.html";
-                InputStream inStream = new FileInputStream(path);
-                while ((len = inStream.read(fileData)) > 0) {
-                    out.write(fileData, 0, len);
-                }
-            }
-            out.close();
-
-            in.close();
-
-            clientSocket.close();
+            RequestProcessor processor = new RequestProcessor(clientSocket);
+            threadPool.execute(processor);
         }
         serverSocket.close();
     }
@@ -105,6 +52,63 @@ public class HttpServerMulti {
             System.exit(1);
         }
         return clientSocket;
+    }
+
+    public static String getPath(BufferedReader in) throws IOException {
+        String inputLine, path = null;
+        boolean firstLine = true;
+        while ((inputLine = in.readLine()) != null) {
+            if (firstLine) {
+                path = inputLine.split(" ")[1];
+                path = path.replace("/", "");
+                System.out.println(path);
+                firstLine = false;
+            }
+            System.out.println("Received: " + inputLine);
+            if (!in.ready()) {
+                break;
+            }
+        }
+        return path;
+    }
+
+    public static void serverAnswer(String path, Socket clientSocket) throws IOException {
+        PrintStream out = new PrintStream(new BufferedOutputStream(clientSocket.getOutputStream()));
+        byte[] fileData = new byte[2000];
+        int len;
+        String filePath = "resources\\" + path;
+        System.out.println(filePath);
+        try {
+            String type = null;
+            if (path.equals("")) {
+                filePath = "resources\\index.html";
+                path = "index.html";
+            }
+
+            if (path.endsWith(".html")) {
+                type = "text/html";
+            } else if (path.endsWith(".jpg") || path.endsWith(".jpeg")) {
+                type = "image/jpeg";
+            } else if (path.endsWith(".js")) {
+                type = "application/json; charset=utf-8";
+            }
+            InputStream inStream = new FileInputStream(path);
+            out.print("HTTP/1.1 200 OK\r\n" +
+                    "Content-type: " + type + "\r\n\r\n");
+            while ((len = inStream.read(fileData)) > 0) {
+                out.write(fileData, 0, len);
+            }
+        } catch (Exception e) {
+            out.println("HTTP/1.1 404 Not Found\r\n" +
+                    "Content-type: text/html\r\n\r\n");
+            filePath = "resources\\notFound.html";
+            path = "notFound.html";
+            InputStream inStream = new FileInputStream(path);
+            while ((len = inStream.read(fileData)) > 0) {
+                out.write(fileData, 0, len);
+            }
+        }
+        out.close();
     }
 
     private int getPort() {

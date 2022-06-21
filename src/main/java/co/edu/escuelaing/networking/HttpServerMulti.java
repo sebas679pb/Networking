@@ -59,7 +59,7 @@ public class HttpServerMulti {
                 } else if(filePath.endsWith(".js")){
                     type = "application/json; charset=utf-8";
                 }
-                InputStream inStream = new FileInputStream(filePath);
+                InputStream inStream = new FileInputStream(path);
                 out.print("HTTP/1.1 200 OK\r\n" +
                         "Content-type: " + type + "\r\n\r\n");
                 while ((len = inStream.read(fileData)) > 0) {
@@ -70,7 +70,7 @@ public class HttpServerMulti {
                         "Content-type: text/html\r\n\r\n");
                 filePath = "resources\\notFound.html";
                 path = "notFound.html";
-                InputStream inStream = new FileInputStream(filePath);
+                InputStream inStream = new FileInputStream(path);
                 while ((len = inStream.read(fileData)) > 0) {
                     out.write(fileData, 0, len);
                 }

@@ -6,15 +6,21 @@ Jhon Sebastian Piñeros Barrera
 
 ## Fecha
 
-15/06/2022
+21/06/2022
 
 ## Descripcion
 
-Este proyecto consiste en realizar el diseño y construccion de servidores que escuchan un puerto y responden la solicitud del cliente y servidores web que atienden solicitudes desde el browser.
+Este proyecto consiste en realizar el diseño y construccion de servidores que escuchan un puerto y responden la solicitud del cliente, servidores web que atienden solicitudes desde el browser y un servidor capaz de responder multiples solicitudes concurrentes.
+
+Para ejecutar el cliente concurrente usamos el comando:
+
+```
+java -cp "target\classes" co.edu.escuelaing.networking.HttpClientMulti #Numero de peticiones
+```
 
 ### LOC/h
 
-Se realizaron 364 lineas de codigo en aproximadamente 6 horas de trabajo, es decir, 60.6 lineas de codigo por hora.
+Se realizaron 450 lineas de codigo en aproximadamente 10 horas de trabajo, es decir, 45 lineas de codigo por hora.
 
 ### Prerrequisitos
 
@@ -22,77 +28,51 @@ Se realizaron 364 lineas de codigo en aproximadamente 6 horas de trabajo, es dec
 - HTML
 - Maven
 - GIT
+- Heroku
 
 ### Diagrama de clases
 
-[![image.png](https://i.postimg.cc/TwwqB9r4/image.png)](https://postimg.cc/hJkddVZL)
+[![image.png](https://i.postimg.cc/2y20HPvk/image.png)](https://postimg.cc/SYYLR1D3)
 
 ### Descripcion diagrama de clases
 
 En el diagrama de clases se puede observar que para el diseño de este proyecto se implementaron las clases:
 
-- URLReader: Lee los valores de un objeto URL.
-- URLExplorer: Lee datos de internet.
-- EchoServer: Servidor que escucha un puerto y responde a las solicitudes del cliente.
-- EchoClient: Aplicativo que envia mensajes al servidor.
-- MathServer: Servidor que escucha un puerto y responder ejecutando operaciones de sen, cos y Tan sobre el valor requerido por el cliente.
-- HttpServer: Servidor web que atiende una solicitud del browser.
-- HttpServerMulti: Servidor web que soporta multiples solicitudes seguidas del browser.
-
-### Reporte de pruebas
-
-MathServer
-
-[![image.png](https://i.postimg.cc/GmYnWPcz/image.png)](https://postimg.cc/yDVG9Z3S)
-
-HttpServer
-
-[![image.png](https://i.postimg.cc/nLDKYzGX/image.png)](https://postimg.cc/jWRJRR9T)
-
-[![image.png](https://i.postimg.cc/tCNMWrCK/image.png)](https://postimg.cc/6yTcNfZc)
-
-HttpServerMulti
-
-[![image.png](https://i.postimg.cc/9XnMVphj/image.png)](https://postimg.cc/vD5Mt5TP)
-
-[![image.png](https://i.postimg.cc/xdLYzwqK/image.png)](https://postimg.cc/jWqGVkH5)
-
-[![image.png](https://i.postimg.cc/c12sPLRx/image.png)](https://postimg.cc/G9PwyrgV)
-
-[![image.png](https://i.postimg.cc/Jz145d3Z/image.png)](https://postimg.cc/Tp46R043)
-
-[![image.png](https://i.postimg.cc/5NfMhQHM/image.png)](https://postimg.cc/kDYZ84Fj)
-
-[![image.png](https://i.postimg.cc/Fs6Dj2Xn/image.png)](https://postimg.cc/7fg34t6g)
-
-[![image.png](https://i.postimg.cc/D0XR9ss1/image.png)](https://postimg.cc/Pvd6ZCSq)
+- HttpServerMain: Clase encargada de implementar el servidor con el patron singleton. 
+- HttpServerMulti: Servidor web que soporta multiples solicitudes seguidas (concurrentes).
+- RequestProcessor: Se encarga de procesar las solicitudes del servidor.
+- HttpClientMulti: Cliente que realiza multiples solicitudes seguidas (concurrentes).
+- ClientRequestProcessor: Se encarga de procesar las solicitudes del cliente.
 
 ### Estructura del proyecto
 
 ```
 C:.
 └───src
-    └───main
-        └───java
-            └───co
-                └───edu
-                    └───escuelaing
-                        └───networking
-                            └───EchoClient.java
-                            └───EchoServer.java
-                            └───HttpServer.java
-                            └───HttpServerMulti.java
-                            └───MathServer.java
-                            └───URLExplorer.java
-                            └───URLReader.java
-                            └───webapp
-                                └───HelloWorld.js
-                                └───img.jpg
-                                └───index.html
-                                └───list.html
-                                └───notFound.html
-                                └───text.html
-                                
+|   └───main
+|       └───java
+|           └───co
+|               └───edu
+|                   └───escuelaing
+|                       └───networking
+|                           └───ClientRequestProcessor.java
+|                           └───EchoClient.java
+|                           └───EchoServer.java
+|                           └───HttpClientMulti.java
+|                           └───HttpServer.java
+|                           └───HttpServerMain.java
+|                           └───HttpServerMulti.java
+|                           └───MathServer.java
+|                           └───RequestProcessor.java
+|                           └───URLExplorer.java
+|                           └───URLReader.java
+└───HelloWorld.js
+└───img.jpg
+└───index.html
+└───list.html
+└───notFound.html
+└───text.html
+
 ```
 
 ### JavaDoc

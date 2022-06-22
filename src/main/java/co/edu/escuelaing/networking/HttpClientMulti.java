@@ -6,6 +6,11 @@ import java.util.concurrent.Executors;
 
 public class HttpClientMulti {
     
+    /**
+     * Cliente que realiza multiples solicitudes seguidas (concurrentes).
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         int threads = Integer.parseInt(args[0]);
         ExecutorService threadPool = Executors.newFixedThreadPool(10);

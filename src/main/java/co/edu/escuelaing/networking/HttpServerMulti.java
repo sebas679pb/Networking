@@ -30,6 +30,10 @@ public class HttpServerMulti {
         serverSocket.close();
     }
 
+    /**
+     * Inicializador del socket del servidor.
+     * @return Socket del server.
+     */
     private ServerSocket serverSocketInit() {
         ServerSocket serverSocket = null;
         try {
@@ -41,6 +45,10 @@ public class HttpServerMulti {
         return serverSocket;
     }
 
+    /**
+     * Inicializador del socket del cliente.
+     * @return Socket del cliente.
+     */
     private Socket clientSocketInit(ServerSocket serverSocket) {
         Socket clientSocket = null;
         try {
@@ -53,6 +61,12 @@ public class HttpServerMulti {
         return clientSocket;
     }
 
+    /**
+     * Metodo que abstrae el path del archivo solicitado.
+     * @param in
+     * @return path del archivo.
+     * @throws IOException
+     */
     public static String getPath(BufferedReader in) throws IOException {
         String inputLine, path = null;
         boolean firstLine = true;
@@ -71,6 +85,12 @@ public class HttpServerMulti {
         return path;
     }
 
+    /**
+     * Metodo que retorna el recurso solicitado por el usuario.
+     * @param path
+     * @param clientSocket
+     * @throws IOException
+     */
     public static void serverAnswer(String path, Socket clientSocket) throws IOException {
         PrintStream out = new PrintStream(new BufferedOutputStream(clientSocket.getOutputStream()));
         byte[] fileData = new byte[2000];
@@ -110,6 +130,10 @@ public class HttpServerMulti {
         out.close();
     }
 
+    /**
+     * Retorna el puerto del servidor.
+     * @return Puerto del servidor.
+     */
     private int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt((System.getenv("PORT")));

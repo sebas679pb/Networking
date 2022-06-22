@@ -20,7 +20,7 @@ public class RequestProcessor implements Runnable {
             in.close();
             clientSocket.close();
         } catch (IOException e) {
-            System.out.println("A ocurrido el siguiente error: " + e);
+            System.out.println("Error: " + e);
         }
     }
     

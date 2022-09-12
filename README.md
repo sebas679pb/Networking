@@ -77,7 +77,7 @@ C:.
 
 ### Heroku Link
 
-https://htmlservermulti.herokuapp.com/
+https://htmlservermultiarep.herokuapp.com/
 
 ### JavaDoc
 
